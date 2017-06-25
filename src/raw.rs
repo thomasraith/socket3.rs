@@ -41,7 +41,7 @@ impl Socket {
     }
 
     pub fn bind(&self, dest_addr : net::SocketAddr) -> io::Result<()> {
-        let (dest_addr, dst_addr_len) = to_c_sockaddr_struct(dest_addr);
+        let (dest_addr, dest_addr_len) = to_c_sockaddr_struct(dest_addr);
 
         unsafe {
             match libc::bind(self.fd, dest_addr, dest_addr_len) {

@@ -12,9 +12,9 @@ fn raw_socket_ipv6_test() {
 
         //Checks is the error means missing permissions (test requires root privileges)
         assert_eq!(error_code, 1);
-        writeln!(&mut std::io::stderr(), "############################################");
-        writeln!(&mut std::io::stderr(), "# ✘  Missing root privileges: Test aborted #");
-        writeln!(&mut std::io::stderr(), "############################################");
+        let _ = writeln!(&mut std::io::stderr(), "############################################");
+        let _ = writeln!(&mut std::io::stderr(), "# ✘  Missing root privileges: Test aborted #");
+        let _ = writeln!(&mut std::io::stderr(), "############################################");
         return;
     }
 
