@@ -40,12 +40,23 @@ impl Socket {
         }
     }
 
-    pub fn send_to(&self, buffer : &[u8], dest_addr : net::SocketAddr, flags : libc::c_int) -> io::Result<usize> {
-        let length = buffer.len();
-        let (dst_addr, dst_addr_len) = to_c_sockaddr_struct(dest_addr);
+    pub fn bind(&self, dest_addr : net::SocketAddr) -> io::Result<()> {
+        let (dest_addr, dst_addr_len) = to_c_sockaddr_struct(dest_addr);
 
         unsafe {
-            match libc::sendto(self.fd, buffer.as_ptr() as *const libc::c_void, length, flags, dst_addr, dst_addr_len) {
+            match libc::bind(self.fd, dest_addr, dest_addr_len) {
+                0 => Ok(()),
+                _ => Err(io::Error::last_os_error())
+            }
+        }
+    }
+
+    pub fn send_to(&self, buffer : &[u8], dest_addr : net::SocketAddr, flags : libc::c_int) -> io::Result<usize> {
+        let length = buffer.len();
+        let (dest_addr, dest_addr_len) = to_c_sockaddr_struct(dest_addr);
+
+        unsafe {
+            match libc::sendto(self.fd, buffer.as_ptr() as *const libc::c_void, length, flags, dest_addr, dest_addr_len) {
                 -1 => {
                     let system_error = io::Error::last_os_error();
 
